@@ -1,4 +1,3 @@
-import { nextTick } from "vue";
 import { useGlobalStore } from "./store";
 
 export default {
