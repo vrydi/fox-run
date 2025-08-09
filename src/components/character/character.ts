@@ -27,6 +27,7 @@ export default defineComponent({
   watch: {},
   mounted() {
     document.addEventListener("keypress", this.keypress);
+    document.getElementById("play-area")?.addEventListener("click", this.jump);
   },
   methods: {
     keypress(event: KeyboardEvent) {
