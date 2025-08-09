@@ -16,6 +16,11 @@ interface berry {
   ID: ID;
 }
 
+interface speed {
+  type: "speed";
+  ID: ID;
+}
+
 export default defineComponent({
   name: "FoxRun",
   setup() {
@@ -34,10 +39,16 @@ export default defineComponent({
       obstacleTimeout: 0,
       checkInterval: 0,
       berryTimeout: 0,
+      speedTimeout: 0,
       score: 0,
       lastScore: 0,
       highscore: localStorage.highscore || 0,
       berries: [] as berry[],
+      speed: null as speed | null,
+      hasZoomies: false,
+      tempSpeed: 0,
+      tempSpeedInterval: 0,
+      speedTimeLeft: 0,
     };
   },
   computed: {},
@@ -79,6 +90,7 @@ export default defineComponent({
 
       this.checkInterval = setInterval(() => {
         this.score++;
+        if (this.hasZoomies) this.score++;
         this.obstacles.forEach((obstacleObj) => {
           const obstacle = document.getElementById(obstacleObj.ID);
           if (!obstacle) return;
@@ -102,8 +114,38 @@ export default defineComponent({
           }
         });
 
+        const checkSpeed = () => {
+          if (!this.speed || this.hasZoomies) return;
+          const speed = document.getElementById(this.speed.ID);
+          if (!speed) return;
+          let div1 = speed.getBoundingClientRect();
+          if (touching(div1)) {
+            this.tempSpeed = this.globalState.gameSpeed;
+            this.tempSpeedInterval = this.globalState.gameInterval;
+            this.hasZoomies = true;
+            this.globalState.gameSpeed = this.globalState.gameSpeed * 2;
+
+            this.speedTimeLeft = 5;
+            const speedInterval = setInterval(() => {
+              this.speedTimeLeft--;
+            }, 1000);
+            setTimeout(() => {
+              this.hasZoomies = false;
+              this.globalState.gameSpeed = this.tempSpeed;
+              this.globalState.gameInterval = this.tempSpeedInterval;
+              window.clearInterval(speedInterval);
+            }, 5000);
+            this.destroySpeed();
+          }
+        };
+
+        checkSpeed();
+
         const expectedGameSpeed = Number((this.score / 500).toFixed(0)) + 5;
-        if (this.globalState.gameSpeed !== expectedGameSpeed) {
+        if (
+          this.globalState.gameSpeed !== expectedGameSpeed &&
+          !this.hasZoomies
+        ) {
           this.globalState.gameSpeed++;
           if (this.globalState.gameSpeed % 3 === 0) {
             this.globalState.gameInterval -= 10;
@@ -126,6 +168,8 @@ export default defineComponent({
 
         this.obstacles = [];
         this.berries = [];
+        this.speed = null;
+        this.speedTimeLeft = 0;
 
         this.lastScore = this.score;
         if (this.score > this.highscore) this.highscore = this.score;
@@ -156,6 +200,14 @@ export default defineComponent({
           this.berryTimeout = setTimeout(() => {
             this.createBerry();
           }, Math.random() * 5000);
+
+        if (
+          Math.random() > (100 - this.globalState.speedChance) / 100 &&
+          !this.hasZoomies
+        )
+          setTimeout(() => {
+            this.createSpeed();
+          }, 1000);
       }, Math.random() * (50 * this.globalState.gameInterval) + 60 * this.globalState.gameInterval);
     },
 
@@ -172,6 +224,17 @@ export default defineComponent({
 
     destroyBerry(ID: ID) {
       this.berries = this.berries.filter((berry) => berry.ID !== ID);
+    },
+
+    createSpeed() {
+      if (!this.speed)
+        this.speed = {
+          type: "speed",
+          ID: crypto.randomUUID(),
+        };
+    },
+    destroySpeed() {
+      this.speed = null;
     },
   },
 });

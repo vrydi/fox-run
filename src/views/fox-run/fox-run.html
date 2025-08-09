@@ -14,6 +14,16 @@
       Start game
     </button>
   </div>
+
+  <div
+    v-if="speedTimeLeft > 0"
+    class="start-screen absolute top-[50%] left-[50%] translate-x-[-50%] z-10"
+  >
+    <div class="bg-white px-5 py-3 rounded-md hover:bg-amber-50">
+      {{speedTimeLeft}}s
+    </div>
+  </div>
+
   <div
     class="background bg-blue-200 w-full h-full flex content-end flex-wrap relative overflow-hidden"
     :class="{'brightness-50': !started}"
@@ -38,6 +48,13 @@
       :ID="berry.ID"
       :key="berry.ID"
     />
+
+    <speed
+      v-if="speed"
+      :ID="speed.ID"
+      :key="speed.ID"
+      @destroy="destroySpeed"
+    ></speed>
   </div>
   <div
     class="ground bg-green-500 h-[100px] w-full"

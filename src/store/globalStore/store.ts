@@ -11,6 +11,8 @@ export const useGlobalStore = defineStore("global", {
       berryChance: 40,
       berryScore: 150,
 
+      speedChance: 100,
+
       gameSpeed: 5,
       gameInterval: 50,
     };
