@@ -5,6 +5,7 @@ import Home from './views/home/home.vue';
 
 <template>
   <Home/>
+  <toast/>
 </template>
 
 <style scoped>

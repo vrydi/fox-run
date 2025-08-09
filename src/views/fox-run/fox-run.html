@@ -1,9 +1,21 @@
 <div
   id="play-area"
-  class="w-full border-2 border-black flex flex-col justify-center mx-auto h-[500px]"
+  class="w-full border-2 border-black flex flex-col justify-center mx-auto h-[500px] rounded-md relative"
 >
   <div
+    v-if="!started"
+    class="start-screen absolute top-[50%] left-[50%] translate-x-[-50%] z-10"
+  >
+    <button
+      class="bg-white px-5 py-3 rounded-md hover:bg-amber-50"
+      @click="startGame"
+    >
+      Start game
+    </button>
+  </div>
+  <div
     class="background bg-blue-200 w-full h-full flex content-end flex-wrap relative overflow-hidden"
+    :class="{'brightness-50': !started}"
   >
     <div class="score absolute top-5 right-5">Score: {{score}}</div>
     <character />
@@ -17,7 +29,10 @@
       :key="obstacle.ID"
     ></Component>
   </div>
-  <div class="ground bg-green-500 h-[100px] w-full"></div>
+  <div
+    class="ground bg-green-500 h-[100px] w-full"
+    :class="{'brightness-50': !started}"
+  ></div>
 </div>
 
 <h1>Last score: {{lastScore}}</h1>

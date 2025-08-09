@@ -1,0 +1,6 @@
+<div
+  class="toast duration-300 absolute rounded-md text-white px-5 py-3 top-5 right-5 z-50"
+  :class="{'bg-green-600 border-green-700': successStatus, 'bg-red-700 border-red-800': errorStatus, 'bg-orange-600 border-orange-700': warningStatus, 'opacity-0': !show, 'opacity-100': show}"
+>
+  <div v-html="message"></div>
+</div>

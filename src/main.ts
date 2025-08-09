@@ -1,12 +1,18 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
-import Obstacle from './components/obstacle/obstacle.vue'
-import Character from './components/character/character.vue'
+import { createApp } from "vue";
+import "./style.css";
+import App from "./App.vue";
+import Obstacle from "./components/obstacle/obstacle.vue";
+import Character from "./components/character/character.vue";
+import Toast from "./components/toast/toast.vue";
+import { createPinia } from "pinia";
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.component("obstacle", Obstacle)
-app.component("character", Character)
+const pinia = createPinia();
+app.use(pinia);
 
-app.mount('#app')
+app.component("obstacle", Obstacle);
+app.component("character", Character);
+app.component("toast", Toast);
+
+app.mount("#app");
