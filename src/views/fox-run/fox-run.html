@@ -1,0 +1,24 @@
+<div
+  id="play-area"
+  class="w-full border-2 border-black flex flex-col justify-center mx-auto h-[500px]"
+>
+  <div
+    class="background bg-blue-200 w-full h-full flex content-end flex-wrap relative overflow-hidden"
+  >
+    <div class="score absolute top-5 right-5">Score: {{score}}</div>
+    <character />
+    <Component
+      v-for="obstacle in obstacles"
+      :is="obstacle.type"
+      :show="obstacle.show"
+      ref="obstacleRefs"
+      @destroy="destroyObstacle"
+      :ID="obstacle.ID"
+      :key="obstacle.ID"
+    ></Component>
+  </div>
+  <div class="ground bg-green-500 h-[100px] w-full"></div>
+</div>
+
+<h1>Last score: {{lastScore}}</h1>
+<h1>Highscore: {{highscore}}</h1>
