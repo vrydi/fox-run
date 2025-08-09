@@ -1,4 +1,5 @@
 import { defineComponent, ref } from "vue";
+import { useGlobalStore } from "../../store/globalStore/store";
 
 export default defineComponent({
   name: "Berry",
@@ -10,7 +11,9 @@ export default defineComponent({
   setup() {
     const berry = ref<null | HTMLImageElement>(null);
 
-    return { berry };
+    const globalState = useGlobalStore();
+
+    return { berry, globalState };
   },
   data() {
     return {
@@ -46,16 +49,18 @@ export default defineComponent({
 
       this.berry.style.right = this.positionRight + "px";
 
-      this.animationID = setInterval(() => {
+      this.animationID = setTimeout(() => {
         if (!this.berry) return;
-        this.positionRight += 5;
+        this.positionRight += this.globalState.gameSpeed;
         this.berry.style.right = this.positionRight + "px";
         if (!elementIsVisibleInViewport(this.berry!, true)) {
           this.stopAnimation();
 
           this.$emit("destroy", this.ID);
+        } else {
+          this.startAnimation();
         }
-      }, 50);
+      }, this.globalState.gameInterval);
     },
     stopAnimation() {
       window.clearInterval(this.animationID);

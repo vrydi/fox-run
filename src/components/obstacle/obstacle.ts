@@ -1,4 +1,5 @@
 import { defineComponent, ref } from "vue";
+import { useGlobalStore } from "../../store/globalStore/store";
 
 export default defineComponent({
   name: "Obstacle",
@@ -14,7 +15,9 @@ export default defineComponent({
   setup() {
     const obstacle = ref<null | HTMLImageElement>(null);
 
-    return { obstacle };
+    const globalState = useGlobalStore();
+
+    return { obstacle, globalState };
   },
   data() {
     return {
@@ -62,14 +65,14 @@ export default defineComponent({
 
       this.animationID = setInterval(() => {
         if (!this.obstacle) return;
-        this.positionRight += 5;
+        this.positionRight += this.globalState.gameSpeed;
         this.obstacle.style.right = this.positionRight + "px";
         if (!elementIsVisibleInViewport(this.obstacle!, true)) {
           this.stopAnimation();
 
           this.$emit("destroy", this.ID);
         }
-      }, 50);
+      }, this.globalState.gameInterval);
     },
     stopAnimation() {
       window.clearInterval(this.animationID);

@@ -28,22 +28,24 @@ export default defineComponent({
   },
   data() {
     return {
+      key: 0,
       started: false,
       obstacles: [] as obstacle[],
-      interval: 0,
+      obstacleTimeout: 0,
       checkInterval: 0,
-      berryInterval: 0,
+      berryTimeout: 0,
       score: 0,
       lastScore: 0,
-      highscore: 0,
+      highscore: localStorage.highscore || 0,
       berries: [] as berry[],
     };
   },
   computed: {},
   mounted() {},
   unmounted() {
-    window.clearInterval(this.interval);
+    window.clearTimeout(this.obstacleTimeout);
     window.clearInterval(this.checkInterval);
+    window.clearTimeout(this.berryTimeout);
   },
   methods: {
     startGame() {
@@ -99,7 +101,15 @@ export default defineComponent({
             this.destroyBerry(berryObj.ID);
           }
         });
-      }, 50);
+
+        const expectedGameSpeed = Number((this.score / 500).toFixed(0)) + 5;
+        if (this.globalState.gameSpeed !== expectedGameSpeed) {
+          this.globalState.gameSpeed++;
+          if (this.globalState.gameSpeed % 3 === 0) {
+            this.globalState.gameInterval -= 10;
+          }
+        }
+      }, this.globalState.gameInterval);
     },
     endGame() {
       this.globalActions.show_toast(
@@ -110,8 +120,9 @@ export default defineComponent({
 
       nextTick(() => {
         this.started = false;
-        window.clearInterval(this.interval);
+        window.clearTimeout(this.obstacleTimeout);
         window.clearInterval(this.checkInterval);
+        window.clearTimeout(this.berryTimeout);
 
         this.obstacles = [];
         this.berries = [];
@@ -119,6 +130,12 @@ export default defineComponent({
         this.lastScore = this.score;
         if (this.score > this.highscore) this.highscore = this.score;
         this.score = 0;
+
+        localStorage.highscore = this.highscore;
+
+        this.globalState.gameSpeed = 5;
+        this.globalState.gameInterval = 50;
+        this.key++;
       });
     },
     createObstacle() {
@@ -136,10 +153,10 @@ export default defineComponent({
         this.createObstacle();
         // 40% chance
         if (Math.random() > (100 - this.globalState.berryChance) / 100)
-          setTimeout(() => {
+          this.berryTimeout = setTimeout(() => {
             this.createBerry();
           }, Math.random() * 5000);
-      }, Math.random() * 5000 + 3000);
+      }, Math.random() * (50 * this.globalState.gameInterval) + 60 * this.globalState.gameInterval);
     },
 
     destroyObstacle(ID: ID) {

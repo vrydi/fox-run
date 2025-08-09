@@ -10,6 +10,9 @@ export const useGlobalStore = defineStore("global", {
 
       berryChance: 40,
       berryScore: 150,
+
+      gameSpeed: 5,
+      gameInterval: 50,
     };
   },
   getters: {},

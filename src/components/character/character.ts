@@ -1,4 +1,5 @@
 import { defineComponent, ref } from "vue";
+import { useGlobalStore } from "../../store/globalStore/store";
 
 export default defineComponent({
   name: "Character",
@@ -14,7 +15,9 @@ export default defineComponent({
   setup() {
     const character = ref<null | HTMLImageElement>(null);
 
-    return { character };
+    const globalState = useGlobalStore();
+
+    return { character, globalState };
   },
   data() {
     return {
@@ -27,7 +30,9 @@ export default defineComponent({
   watch: {},
   mounted() {
     document.addEventListener("keypress", this.keypress);
-    document.getElementById("play-area")?.addEventListener("click", this.jump);
+    document
+      .getElementById("play-area")
+      ?.addEventListener("mousedown", this.jump);
   },
   methods: {
     keypress(event: KeyboardEvent) {
@@ -46,7 +51,7 @@ export default defineComponent({
             this.positionBottom += 5;
             this.character!.style.bottom = this.positionBottom + "px";
             resolve();
-          }, 30);
+          }, this.globalState.gameInterval / 2);
         });
       };
 
@@ -56,7 +61,7 @@ export default defineComponent({
             this.positionBottom -= 5;
             this.character!.style.bottom = this.positionBottom + "px";
             resolve();
-          }, 30);
+          }, this.globalState.gameInterval / 2);
         });
       };
 
@@ -89,7 +94,7 @@ export default defineComponent({
                               });
                             });
                           });
-                        }, 750);
+                        }, 15 * this.globalState.gameInterval);
                       });
                     });
                   });
