@@ -1,6 +1,6 @@
 <div
   id="play-area"
-  class="w-full border-2 border-black flex flex-col justify-center mx-auto h-[500px] rounded-md relative"
+  class="w-full border-2 border-black flex flex-col justify-center mx-auto h-[500px] rounded-md relative overflow-hidden"
 >
   <div
     v-if="!started"
@@ -28,6 +28,15 @@
       :ID="obstacle.ID"
       :key="obstacle.ID"
     ></Component>
+
+    <Component
+      v-for="berry in berries"
+      :is="berry.type"
+      ref="berryRefs"
+      @destroy="destroyBerry"
+      :ID="berry.ID"
+      :key="berry.ID"
+    />
   </div>
   <div
     class="ground bg-green-500 h-[100px] w-full"

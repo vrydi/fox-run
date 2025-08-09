@@ -7,6 +7,9 @@ export const useGlobalStore = defineStore("global", {
       toastMessage: "",
       toastState: "error",
       toastTime: 1000,
+
+      berryChance: 40,
+      berryScore: 150,
     };
   },
   getters: {},
