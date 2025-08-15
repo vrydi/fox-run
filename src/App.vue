@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import Home from './views/home/home.vue';
-
+import Navbar from "./components/navbar/navbar.vue";
 </script>
 
 <template>
-  <Home/>
-  <toast/>
+  <Navbar />
+  <div
+    class="container pt-[65px] mt-4 flex justify-center flex-col mx-auto px-[24px]"
+  >
+    <router-view />
+  </div>
+
+  <toast />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
