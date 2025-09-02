@@ -18,6 +18,7 @@
         class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
         aria-controls="navbar-sticky"
         aria-expanded="false"
+        @click="open = !open"
       >
         <span class="sr-only">Open main menu</span>
         <svg
@@ -38,7 +39,8 @@
       </button>
     </div>
     <div
-      class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+      class="items-center justify-between gap-4 w-full md:flex md:w-auto md:order-1"
+      :class="{hidden: open === false}"
       id="navbar-sticky"
     >
       <ul
@@ -47,7 +49,7 @@
         <li v-for="route in routes">
           <routerLink
             :to="route"
-            class="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+            class="block py-2 my-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
             >{{route.name}}</routerLink
           >
         </li>

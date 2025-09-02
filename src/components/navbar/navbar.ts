@@ -4,7 +4,9 @@ export default defineComponent({
   name: "Navbar",
   setup() {},
   data() {
-    return {};
+    return {
+      open: false,
+    };
   },
   computed: {
     currentRoute() {

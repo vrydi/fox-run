@@ -5,6 +5,7 @@ import {
 } from "vue-router";
 import FoxRun from "./views/fox-run/fox-run.vue";
 import Draw from "./views/draw/draw.vue";
+import Snake from "./views/snake/snake.vue";
 
 export const routes = [
   {
@@ -16,6 +17,11 @@ export const routes = [
     name: "Pixel Draw",
     path: "/draw",
     component: Draw,
+  },
+  {
+    name: "Snake",
+    path: "/snake",
+    component: Snake,
   },
 ] as RouteRecordRaw[];
 

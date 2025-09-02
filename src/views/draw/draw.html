@@ -1,1 +1,45 @@
-draw
+<div class="flex flex-row-reverse justify-center">
+  <div class="col">
+    <table class="mx-auto">
+      <tbody>
+        <tr v-for="(gridRow, rowIndex) in grid" class="flex">
+          <td
+            v-for="(gridCol, colIndex) in gridRow"
+            class="h-[24px] w-[24px] border-1 border-gray-300 block"
+            :class="[gridCol]"
+            @click="colourCell(rowIndex, colIndex)"
+          ></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="flex gap-5 pt-5 mx-auto justify-center">
+      <button
+        v-for="colour in colours"
+        class="h-[24px] w-[48px] border-1 rounded-md transition-all"
+        :class="[{'shadow-lg shadow-blue-500/50': brushColour === colour}, colour]"
+        @click="brushColour = colour"
+      ></button>
+    </div>
+  </div>
+
+  <aside class="fixed left-5">
+    <div class="flex flex-col">
+      <label for="width">Grid Width</label>
+      <input
+        type="range"
+        name="width"
+        id="width"
+        v-model="gridWidth"
+        min="0"
+        max="100"
+        @change="generateGrid"
+        step="1"
+        list="markers"
+      />
+    </div>
+    <datalist id="markers" class="flex flex-col justify-between vertical">
+      <option :value="0" :label="0"></option>
+      <option v-for="x in 10" :value="x * 10" :label="x * 10"></option>
+    </datalist>
+  </aside>
+</div>
