@@ -6,6 +6,7 @@ import {
 import FoxRun from "./views/fox-run/fox-run.vue";
 import Draw from "./views/draw/draw.vue";
 import Snake from "./views/snake/snake.vue";
+import Calculator from "./views/calculator/Calculator.vue";
 
 export const routes = [
   {
@@ -22,6 +23,11 @@ export const routes = [
     name: "Snake",
     path: "/snake",
     component: Snake,
+  },
+  {
+    name: "calculator",
+    path: "/calc",
+    component: Calculator,
   },
 ] as RouteRecordRaw[];
 
