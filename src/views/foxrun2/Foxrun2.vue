@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, toRaw, watch } from "vue";
+import { defineComponent, ref, toRaw } from "vue";
 import FoxComponent from "./FoxComponent.vue";
 import Rock from "./Rock.vue";
 import { useFoxrunStore } from "../../store/foxrun2/store";
@@ -8,7 +8,7 @@ export default defineComponent({
   setup() {
     const playarea = ref<HTMLDivElement | null>(null);
     const fox = ref<typeof FoxComponent | null>(null);
-    const rockElements = ref<HTMLImageElement[]>([]);
+    const rockElements = ref<InstanceType<typeof Rock>[]>([]);
 
     const foxrunState = useFoxrunStore();
     const foxrunActions = toRaw(useFoxrunStore());
