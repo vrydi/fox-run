@@ -2,14 +2,18 @@
 import { defineComponent, ref, toRaw } from "vue";
 import { useFoxrunStore } from "../../store/foxrun2/store";
 import Rock from "./Rock.vue";
+import Berry from "./Berry.vue";
 
 export default defineComponent({
   props: {
     rocks: {
       type: Array as () => InstanceType<typeof Rock>[],
     },
+    berries: {
+      type: Array as () => InstanceType<typeof Berry>[],
+    },
   },
-  emits: ["hit"],
+  emits: ["hit", "berry"],
   setup() {
     const fox = ref<HTMLImageElement | null>(null);
     const foxrunState = useFoxrunStore();
@@ -104,52 +108,32 @@ export default defineComponent({
         );
       });
 
-      console.log(
-        overlaps?.reduce((tot: Boolean, curr: Boolean) => tot || curr, false)
+      const berryOverlaps = this.berries?.map(
+        (berry: InstanceType<typeof Berry>) => {
+          const rect1 = this.fox!.getBoundingClientRect();
+          const rect2 = berry.$el.getBoundingClientRect();
+
+          return !(
+            rect1.right < rect2.left ||
+            rect1.left > rect2.right ||
+            rect1.bottom < rect2.top ||
+            rect1.top > rect2.bottom
+          );
+        }
       );
+
       const hit = overlaps?.reduce(
         (tot: Boolean, curr: Boolean) => tot || curr,
         false
       );
 
+      const berry = berryOverlaps?.reduce(
+        (tot: Boolean, curr: Boolean) => tot || curr,
+        false
+      );
+
       if (hit) this.$emit("hit");
-
-      // const dimensions = this.fox!.getBoundingClientRect();
-      // console.log(this.game?.getRocks());
-
-      // const corner1 = document.elementsFromPoint(
-      //   dimensions.left,
-      //   dimensions.top
-      // );
-      // const corner2 = document.elementsFromPoint(
-      //   dimensions.right,
-      //   dimensions.top
-      // );
-      // const corner3 = document.elementsFromPoint(
-      //   dimensions.left,
-      //   dimensions.bottom
-      // );
-      // const corner4 = document.elementsFromPoint(
-      //   dimensions.right,
-      //   dimensions.bottom
-      // );
-
-      // if (
-      //   corner1.some((el) =>
-      //     this.game?.getRocks().some((r: Rock) => r.ID === el.id)
-      //   ) ||
-      //   corner2.some((el) =>
-      //     this.game?.getRocks().some((r: Rock) => r.ID === el.id)
-      //   ) ||
-      //   corner3.some((el) =>
-      //     this.game?.getRocks().some((r: Rock) => r.ID === el.id)
-      //   ) ||
-      //   corner4.some((el) =>
-      //     this.game?.getRocks().some((r: Rock) => r.ID === el.id)
-      //   )
-      // ) {
-      //   console.log("hit");
-      // }
+      if (berry) this.$emit("berry");
     },
   },
 });

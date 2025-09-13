@@ -3,28 +3,39 @@ import { defineComponent, ref, toRaw } from "vue";
 import FoxComponent from "./FoxComponent.vue";
 import Rock from "./Rock.vue";
 import { useFoxrunStore } from "../../store/foxrun2/store";
+import Berry from "./Berry.vue";
 
 export default defineComponent({
   setup() {
     const playarea = ref<HTMLDivElement | null>(null);
     const fox = ref<typeof FoxComponent | null>(null);
     const rockElements = ref<InstanceType<typeof Rock>[]>([]);
+    const berryElements = ref<InstanceType<typeof Berry>[]>([]);
 
     const foxrunState = useFoxrunStore();
     const foxrunActions = toRaw(useFoxrunStore());
 
-    return { playarea, fox, rockElements, foxrunState, foxrunActions };
+    return {
+      playarea,
+      fox,
+      rockElements,
+      berryElements,
+      foxrunState,
+      foxrunActions,
+    };
   },
-  components: { FoxComponent, Rock },
+  components: { FoxComponent, Rock, Berry },
   data() {
     return {
       rocks: [] as string[],
+      berries: [] as string[],
       fps: 60,
       started: false,
       sequenceTimeoutId: 0,
 
       score: 0,
       timeSinceLastObject: 0,
+      timeSinceLastBerry: 0,
     };
   },
   computed: {},
@@ -47,12 +58,22 @@ export default defineComponent({
         this.foxrunState.rockSpeed -= 0.025;
 
         this.timeSinceLastObject--;
+        this.timeSinceLastBerry--;
 
         this.fox?.checkForCollision();
 
         if (Math.random() * 100 < 10 && this.timeSinceLastObject <= 0) {
           this.rocks.push(crypto.randomUUID());
           this.timeSinceLastObject = 50;
+        }
+
+        if (
+          Math.random() * 100 < 10 &&
+          this.timeSinceLastBerry <= 0 &&
+          this.berries.length === 0
+        ) {
+          this.berries.push(crypto.randomUUID());
+          this.timeSinceLastBerry = 150;
         }
 
         this.runSequence();
@@ -90,10 +111,29 @@ export default defineComponent({
         </button>
       </div>
 
-      <FoxComponent ref="fox" :rocks="rockElements" @hit="end" />
+      <FoxComponent
+        ref="fox"
+        :rocks="rockElements"
+        :berries="berryElements"
+        @hit="end"
+        @berry="
+          () => {
+            score += 5;
+            berries = [];
+          }
+        "
+      />
 
       <template v-if="started">
         <p class="absolute top-5 right-10">Score: {{ score }}</p>
+
+        <Berry
+          ref="berryElements"
+          v-for="x in berries"
+          :key="x"
+          :ID="x"
+          :widthOfArea="playarea?.getBoundingClientRect().width"
+        />
 
         <Rock
           ref="rockElements"
