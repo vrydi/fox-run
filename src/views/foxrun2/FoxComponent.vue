@@ -43,6 +43,20 @@ export default defineComponent({
         this.jump();
       }
     });
+
+    document.addEventListener("click", () => {
+      this.jump();
+    });
+  },
+  unmounted() {
+    document.removeEventListener("keydown", (e) => {
+      if (e.key === " ") {
+        this.jump();
+      }
+    });
+    document.removeEventListener("click", () => {
+      this.jump();
+    });
   },
   methods: {
     jump() {
