@@ -31,9 +31,11 @@ export default defineComponent({
       berries: [] as string[],
       fps: 60,
       started: false,
+      finishedOnce: false,
       sequenceTimeoutId: 0,
 
       score: 0,
+      highscore: Number(localStorage.getItem("highscore-v2")) || 0,
       timeSinceLastObject: 0,
       timeSinceLastBerry: 0,
     };
@@ -68,7 +70,7 @@ export default defineComponent({
         }
 
         if (
-          Math.random() * 100 < 10 &&
+          Math.random() * 100 < 5 &&
           this.timeSinceLastBerry <= 0 &&
           this.berries.length === 0
         ) {
@@ -82,6 +84,12 @@ export default defineComponent({
     end() {
       window.clearTimeout(this.sequenceTimeoutId);
       this.started = false;
+      this.finishedOnce = true;
+
+      if (this.score > this.highscore) {
+        localStorage.setItem("highscore-v2", this.score.toString());
+        this.highscore = this.score;
+      }
     },
     generateNewRock(ID: string) {
       if (!this.started) return;
@@ -100,11 +108,13 @@ export default defineComponent({
       ref="playarea"
     >
       <div
-        class="start flex h-full w-full justify-center items-center"
+        class="start flex flex-col text-white h-full w-full justify-center items-center"
         v-if="!started"
       >
+        <p>Previous score: {{ score }}</p>
+        <p>Highscore: {{ highscore }}</p>
         <button
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          class="px-4 py-2 mt-3 bg-blue-500 text-white rounded hover:bg-blue-600"
           @click.prevent.stop="start"
         >
           start

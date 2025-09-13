@@ -58,10 +58,14 @@ export default defineComponent({
   <img
     src="https://i.ibb.co/3y2y5BXR/berry.png"
     alt="berry"
-    class="absolute bottom-[-32px] h-[32px] right-0 berry"
+    class="absolute h-[32px] right-0 berry"
     :id="ID"
     ref="berry"
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+.berry {
+  bottom: 96px;
+}
+</style>
